@@ -1,15 +1,14 @@
 <?php
-// Database connection parameters
-$servername = "localhost";
-$username = "root";
-$password = "sandaliniro";
-$dbname = "medmealsignin_db";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbname = "medimeal";
 
-// Check connection
-if ($conn->connect_error) {
+$conn = new mysqli($host, $user, $pass, $dbname);
+
+if($conn->connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
+
 ?>
