@@ -123,6 +123,24 @@ body{
   text-decoration:none;transition:all 0.22s;box-shadow:0 4px 16px rgba(74,122,80,0.22);
 }
 .nav-btn:hover{background:var(--sage);transform:translateY(-1px);box-shadow:0 6px 22px rgba(74,122,80,0.3)}
+.user-menu{position:relative}
+.user-menu:focus-within .user-dropdown,
+.user-menu:hover .user-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.user-menu .nav-user{
+  padding:7px 14px;border:none;font-family:var(--ff-b);cursor:pointer;
+}
+.user-menu .nav-user::before{content:'👤';font-size:0.88rem}
+.user-menu .nav-user::after{content:''}
+.user-dropdown{
+  position:absolute;right:0;top:calc(100% + 8px);min-width:160px;background:var(--white);
+  border:1px solid rgba(184,216,188,0.7);border-radius:14px;box-shadow:var(--shadow-md);
+  padding:8px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:all 0.18s;z-index:80;
+}
+.user-dropdown a{
+  display:block;padding:10px 12px;border-radius:10px;color:var(--char);text-decoration:none;
+  font-size:0.86rem;font-weight:500;white-space:nowrap;
+}
+.user-dropdown a:hover{background:var(--sage-lll);color:var(--sage-d)}
 
 /* ══════════════════════════════════════
    HERO STRIP — above the form
@@ -412,7 +430,7 @@ footer{
 </style>
 
 <script>
-function navigateToSignIn(){window.location.href='signin.html'}
+function navigateToSignIn(){window.location.href='login.php'}
 function setActive(id){document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id))}
 function showText(){
   document.getElementById('area-text').classList.add('visible');
@@ -553,17 +571,29 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 <!-- NAV -->
 <nav class="nav">
-  <a href="home.html" class="nav-logo">
+  <a href="home.php" class="nav-logo">
     <img src="images/logo-removebg-preview.png" alt="" onerror="this.style.display='none'">
     <span class="nav-brand">Medi<span class="s">ආහාර</span></span>
   </a>
   <div class="nav-right">
     <?php if(isset($_SESSION['user_name'])): ?>
-      <span class="nav-user"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+      <div class="user-menu">
+        <button type="button" class="nav-user"><?php echo htmlspecialchars($_SESSION['user_name'], ENT_QUOTES, 'UTF-8'); ?></button>
+        <div class="user-dropdown">
+          <a href="userProfile.php">User Profile</a>
+          <a href="logout.php">Logout</a>
+        </div>
+      </div>
     <?php elseif(isset($_SESSION['user_email'])): ?>
-      <span class="nav-user"><?php echo htmlspecialchars(substr($_SESSION['user_email'],0,8)).'…'; ?></span>
+      <div class="user-menu">
+        <button type="button" class="nav-user"><?php echo htmlspecialchars(substr($_SESSION['user_email'], 0, 8), ENT_QUOTES, 'UTF-8'); ?>...</button>
+        <div class="user-dropdown">
+          <a href="userProfile.php">User Profile</a>
+          <a href="logout.php">Logout</a>
+        </div>
+      </div>
     <?php else: ?>
-      <a href="signin.html" class="nav-btn">Sign in</a>
+      <a href="login.php" class="nav-btn">Sign in</a>
     <?php endif; ?>
   </div>
 </nav>

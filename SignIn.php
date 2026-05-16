@@ -1,31 +1,37 @@
 <?php
 session_start();
 include 'database.php';
-    $email = $_POST['email'];
-    $password = $_POST['password'];
 
-    $sql = "SELECT * FROM signin WHERE email='$email' AND password='$password'";
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: login.php");
+    exit();
+}
 
-    $result = mysqli_query($conn, $sql);
-    if(mysqli_num_rows($result) > 0){
+$email = $_POST['email'];
+$password = $_POST['password'];
 
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
-    $_SESSION['user_name'] = $row['name'];
-    $_SESSION['user_email'] = $row['email'];
+    $storedPassword = $row['password'];
 
-     header("Location: Front_End.php");
-     exit();
-
-     //vertify password
-    // if($password == $row['password'] && $email == $row['email']){
-    //     // $_SESSION['user__name']=$name;
-    //     $_SESSION['user_email']=$email;
-    //     // $_SESSION['user_password']=$password;
-    //     header("Location: Front_End.php");
-    //     exit();
-    // }
+    if (!password_verify($password, $storedPassword) && !hash_equals($storedPassword, $password)) {
+        echo "<script>alert('Invalid email or password'); window.location.href='login.php';</script>";
+        exit();
     }
-    else{
-        echo "<script>alert('Invalid email or password');</script>";}
 
+    $_SESSION['user_name'] = $row['full_name'];
+    $_SESSION['user_email'] = $row['email'];
+    $_SESSION['profile_created'] = $row['created_at'] ?? date('Y-m-d');
+
+    header("Location: Front_End.php");
+    exit();
+} else {
+    echo "<script>alert('Invalid email or password'); window.location.href='login.php';</script>";
+}
 ?>

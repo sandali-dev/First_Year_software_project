@@ -1,8 +1,9 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>window.location.replace('login.php');</script>
-<noscript><meta http-equiv="refresh" content="0;url=login.php"></noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign In </title>
@@ -311,6 +312,25 @@ footer{
   background:rgba(223,240,222,0.4);
 }
 .footer-brand{color:var(--sage-d);font-family:var(--ff-d);font-style:italic}
+.user-menu{position:relative}
+.user-menu:focus-within .user-dropdown,
+.user-menu:hover .user-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.nav-user{
+  display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:500;color:var(--char);
+  background:var(--sage-lll);border:1px solid var(--sage-l);border-radius:999px;padding:8px 14px;
+  font-family:var(--ff-b);cursor:pointer;
+}
+.nav-user::before{content:'👤';font-size:0.88rem}
+.user-dropdown{
+  position:absolute;right:0;top:calc(100% + 8px);min-width:160px;background:var(--white);
+  border:1px solid rgba(184,216,188,0.7);border-radius:14px;box-shadow:var(--shadow-md);
+  padding:8px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:all 0.18s;z-index:80;
+}
+.user-dropdown a{
+  display:block;padding:10px 12px;border-radius:10px;color:var(--char);text-decoration:none;
+  font-size:0.86rem;font-weight:500;white-space:nowrap;
+}
+.user-dropdown a:hover{background:var(--sage-lll);color:var(--sage-d)}
 
 /* Shared keyframes */
 @keyframes fadeUp{
@@ -342,12 +362,22 @@ footer{
     <img src="images/logo-removebg-preview.png" alt="" onerror="this.style.display='none'">
     <span class="nav-brand">Medi<span class="s">ආහාර</span></span>
   </a>
-  <a href="home.php" class="nav-home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M3 12L12 3l9 9M4 10v10a1 1 0 001 1h5v-6h4v6h5a1 1 0 001-1V10"/>
-    </svg>
-    Back to home
-  </a>
+  <?php if(isset($_SESSION['user_name'])): ?>
+    <div class="user-menu">
+      <button type="button" class="nav-user"><?php echo htmlspecialchars($_SESSION['user_name'], ENT_QUOTES, 'UTF-8'); ?></button>
+      <div class="user-dropdown">
+        <a href="userProfile.php">User Profile</a>
+        <a href="logout.php">Logout</a>
+      </div>
+    </div>
+  <?php else: ?>
+    <a href="home.php" class="nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12L12 3l9 9M4 10v10a1 1 0 001 1h5v-6h4v6h5a1 1 0 001-1V10"/>
+      </svg>
+      Back to home
+    </a>
+  <?php endif; ?>
 </nav>
 
 <!-- MAIN -->

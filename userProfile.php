@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_name'])) {
-    header('Location: signin.html');
+    header('Location: login.php');
     exit();
 }
 
@@ -57,6 +57,14 @@ $memberSince = $_SESSION['profile_created'] ?? 'Today';
         .btn-primary { background: #019c78; color: #fff; }
         .btn-secondary { background: #f2f7f4; color: #0f4f38; border: 1px solid #d4e7df; }
         a.btn { text-decoration: none; }
+        .user-menu { position: relative; }
+        .user-menu:focus-within .user-dropdown,
+        .user-menu:hover .user-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-user { display: flex; align-items: center; gap: 8px; background: #eafdf5; color: #0f4f38; border: 1px solid #b7ead5; border-radius: 999px; padding: 12px 18px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+        .nav-user::before { content: '👤'; font-size: 0.9rem; }
+        .user-dropdown { position: absolute; right: 0; top: calc(100% + 8px); min-width: 160px; background: #fff; border: 1px solid #d9f1e3; border-radius: 14px; box-shadow: 0 16px 40px rgba(22, 75, 62, 0.12); padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: all 0.18s; z-index: 20; }
+        .user-dropdown a { display: block; padding: 10px 12px; border-radius: 10px; color: #0f4f38; text-decoration: none; font-size: 0.9rem; font-weight: 700; white-space: nowrap; }
+        .user-dropdown a:hover { background: #eef8f3; }
         @media (max-width: 820px) { .profile-stats-grid { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .profile-header { flex-direction: column; align-items: flex-start; } }
     </style>
@@ -73,7 +81,13 @@ $memberSince = $_SESSION['profile_created'] ?? 'Today';
             </div>
             <div class="profile-actions">
                 <a href="Front_End.php" class="btn btn-secondary">Back to Home</a>
-                <a href="logout.php" class="btn btn-primary">Logout</a>
+                <div class="user-menu">
+                    <button type="button" class="nav-user"><?php echo htmlspecialchars($_SESSION['user_name'], ENT_QUOTES, 'UTF-8'); ?></button>
+                    <div class="user-dropdown">
+                        <a href="userProfile.php">User Profile</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -1,8 +1,9 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>window.location.replace('home.php');</script>
-<noscript><meta http-equiv="refresh" content="0;url=home.php"></noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Medi – ආහාර</title>
@@ -112,6 +113,26 @@ body{
   box-shadow:0 4px 16px rgba(74,122,80,0.22);
 }
 .nav-btn:hover{background:var(--sage);transform:translateY(-1px);box-shadow:0 6px 22px rgba(74,122,80,0.3)}
+.user-menu{position:relative}
+.user-menu:focus-within .user-dropdown,
+.user-menu:hover .user-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.nav-user{
+  display:flex;align-items:center;gap:8px;background:var(--sage-l);color:var(--char);
+  border:none;border-radius:999px;padding:clamp(7px,1.2vh,10px) clamp(14px,2vw,20px);
+  font-family:var(--ff-b);font-size:clamp(0.78rem,1.3vw,0.88rem);font-weight:500;cursor:pointer;
+}
+.nav-user::before{content:'👤';font-size:0.88rem}
+.nav-user::after{content:''}
+.user-dropdown{
+  position:absolute;right:0;top:calc(100% + 8px);min-width:160px;background:var(--white);
+  border:1px solid var(--sage-l);border-radius:14px;box-shadow:0 8px 28px rgba(74,122,80,0.18);
+  padding:8px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:all 0.18s;z-index:20;
+}
+.user-dropdown a{
+  display:block;padding:10px 12px;border-radius:10px;color:var(--char);text-decoration:none;
+  font-size:0.86rem;font-weight:500;white-space:nowrap;
+}
+.user-dropdown a:hover{background:var(--sage-l);color:var(--sage-d)}
 
 /* ── MAIN AREA ── */
 .main{
@@ -393,8 +414,18 @@ body{
       <span class="nav-brand">Medi<span class="s">ආහාර</span></span>
     </div>
     <div class="nav-right">
-      <a href="login.php" class="nav-link">Sign in</a>
-      <a href="login.php" class="nav-btn">Get started</a>
+      <?php if(isset($_SESSION['user_name'])): ?>
+        <div class="user-menu">
+          <button type="button" class="nav-user"><?php echo htmlspecialchars($_SESSION['user_name'], ENT_QUOTES, 'UTF-8'); ?></button>
+          <div class="user-dropdown">
+            <a href="userProfile.php">User Profile</a>
+            <a href="logout.php">Logout</a>
+          </div>
+        </div>
+      <?php else: ?>
+        <a href="login.php" class="nav-link">Sign in</a>
+        <a href="login.php" class="nav-btn">Get started</a>
+      <?php endif; ?>
     </div>
   </nav>
 

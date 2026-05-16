@@ -2,5 +2,5 @@
 session_start();
 $_SESSION = [];
 session_destroy();
-header('Location: signin.html');
+header('Location: login.php');
 exit();
