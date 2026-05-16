@@ -64,10 +64,11 @@ $pl_allergies = $allergy_atom !== '' ? "[$allergy_atom]" : '[]';
 $pl_query     = "recommend($pl_diseases,$age_atom,$pref_atom,$pl_allergies)";
 
 $pl_file = __DIR__ . '/foodie.pl';
+// swipl must be in your system PATH (works on XAMPP/Windows and Linux).
+// The Prolog goal uses double quotes as required by SWI-Prolog on Windows.
 $command = '"C:\\Program Files\\swipl\\bin\\swipl.exe" -q -s '
          . escapeshellarg($pl_file)
          . ' -g "' . $pl_query . ',halt." 2>&1';
-
 $output = shell_exec($command) ?? '';
 
 if (empty(trim($output))) {
@@ -118,24 +119,18 @@ $tip_raw = extract_block('=== HEALTH TIP ===', $output);
 
 $recommendedFoods = extract_block('=== HIGHLY RECOMMENDED FOODS ===', $output);
 
-if (isset($_SESSION['user_name']) && !empty($recommendedFoods)) {
-    if (!isset($_SESSION['user_recommendations']) || !is_array($_SESSION['user_recommendations'])) {
-        $_SESSION['user_recommendations'] = [];
-    }
-    foreach ($recommendedFoods as $item) {
-        if (!in_array($item, $_SESSION['user_recommendations'], true)) {
-            $_SESSION['user_recommendations'][] = $item;
-        }
-    }
-
-    if (!isset($_SESSION['recommendation_history']) || !is_array($_SESSION['recommendation_history'])) {
-        $_SESSION['recommendation_history'] = [];
-    }
-    $_SESSION['recommendation_history'][] = [
-        'timestamp'  => date('Y-m-d H:i:s'),
-        'conditions' => $disease_labels,
-        'foods'      => $recommendedFoods,
-    ];
+// ── Save history to the database (persists after logout) ─────
+if (isset($_SESSION['user_id']) && !empty($recommendedFoods)) {
+    include_once 'database.php';
+    $userId        = (int) $_SESSION['user_id'];
+    $conditionsStr = implode(', ', $disease_labels);
+    $foodsJson     = json_encode($recommendedFoods);
+    $ins = $conn->prepare(
+        "INSERT INTO recommendation_history (user_id, conditions, foods) VALUES (?, ?, ?)"
+    );
+    $ins->bind_param("iss", $userId, $conditionsStr, $foodsJson);
+    $ins->execute();
+    $ins->close();
 }
 
 echo json_encode([

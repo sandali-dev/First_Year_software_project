@@ -424,7 +424,7 @@ body{
         </div>
       <?php else: ?>
         <a href="login.php" class="nav-link">Sign in</a>
-        <a href="login.php" class="nav-btn">Get started</a>
+        <a href="Front_End.php" class="nav-btn">Get started</a>
       <?php endif; ?>
     </div>
   </nav>
