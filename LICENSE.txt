@@ -1,0 +1,10 @@
+MediMeal Academic Use License
+
+Copyright © 2025-2026. All rights reserved.
+
+Permission is granted to use this software for educational,
+non-commercial academic purposes. Any use for commercial purposes,
+redistribution, or sublicensing requires explicit written permission
+from the original authors.
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.

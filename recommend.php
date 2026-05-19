@@ -64,8 +64,7 @@ $pl_allergies = $allergy_atom !== '' ? "[$allergy_atom]" : '[]';
 $pl_query     = "recommend($pl_diseases,$age_atom,$pref_atom,$pl_allergies)";
 
 $pl_file = __DIR__ . '/foodie.pl';
-// swipl must be in your system PATH (works on XAMPP/Windows and Linux).
-// The Prolog goal uses double quotes as required by SWI-Prolog on Windows.
+
 $command = '"C:\\Program Files\\swipl\\bin\\swipl.exe" -q -s '
          . escapeshellarg($pl_file)
          . ' -g "' . $pl_query . ',halt." 2>&1';
